@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Comparison Slider</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .slider-container {
+      position: relative;
+      width: 90vw;
+      max-width: 1400px;
+      overflow: hidden;
+      border-radius: 24px;
+    }
+    .slider-container img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .slider-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+    }
+    .slider-top img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+    }
+    .slider-handle {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 4px;
+      height: 100%;
+      background: #fff;
+      cursor: ew-resize;
+      z-index: 2;
+      transform: translateX(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="slider-container" id="slider">
+    <img src="before.png" alt="Before image">
+    <div class="slider-top" id="sliderTop">
+      <img src="after.png" alt="After image">
+    </div>
+    <div class="slider-handle" id="sliderHandle"></div>
+  </div>
+
+  <script>
+    const slider = document.getElementById('slider');
+    const sliderTop = document.getElementById('sliderTop');
+    const handle = document.getElementById('sliderHandle');
+
+    let isDown = false;
+
+    slider.addEventListener('mousedown', () => isDown = true);
+    slider.addEventListener('mouseup', () => isDown = false);
+    slider.addEventListener('mouseleave', () => isDown = false);
+    slider.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      const rect = slider.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const percent = Math.max(0, Math.min(x / rect.width, 1));
+      sliderTop.style.width = `${percent * 100}%`;
+      handle.style.left = `${percent * 100}%`;
+    });
+  </script>
+</body>
+</html>
