@@ -1,77 +1,101 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Сравнение картинок</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Сравнение До / После</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       background: #111;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       height: 100vh;
     }
 
     .slider-container {
       position: relative;
-      width: 90vw;
+      width: 100%;
       max-width: 1200px;
       overflow: hidden;
-      border-radius: 16px;
-      box-shadow: 0 0 10px #000;
-      cursor: ew-resize;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.4);
     }
 
     .slider-container img {
-      position: absolute;
-      top: 0;
-      left: 0;
+      display: block;
       width: 100%;
       height: auto;
-      display: block;
       user-select: none;
       pointer-events: none;
     }
 
-    .slider-container .after {
-      clip-path: inset(0 50% 0 0); /* Показываем половину */
-      transition: clip-path 0.05s ease-out;
+    .after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      clip-path: inset(0 50% 0 0);
+      transition: clip-path 0.05s ease;
     }
 
     .handle {
       position: absolute;
       top: 0;
       left: 50%;
-      transform: translateX(-50%);
-      width: 4px;
+      width: 3px;
       height: 100%;
-      background: white;
-      z-index: 10;
+      background: #fff;
+      transform: translateX(-50%);
+      cursor: ew-resize;
+      z-index: 2;
     }
   </style>
 </head>
 <body>
+  <div class="slider-container" id="slider">
+    <img src="before.png" alt="До">
+    <div class="after">
+      <img src="after.png" alt="После">
+    </div>
+    <div class="handle" id="handle"></div>
+  </div>
 
-<div class="slider-container" id="slider">
-  <img src="before.png" class="before" alt="До">
-  <img src="after.png" class="after" alt="После">
-  <div class="handle" id="handle"></div>
-</div>
+  <script>
+    const slider = document.getElementById('slider');
+    const handle = document.getElementById('handle');
+    const after = document.querySelector('.after');
 
-<script>
-  const slider = document.getElementById('slider');
-  const afterImg = slider.querySelector('.after');
-  const handle = document.getElementById('handle');
+    function updateSlider(x) {
+      const rect = slider.getBoundingClientRect();
+      let offset = x - rect.left;
+      offset = Math.max(0, Math.min(offset, rect.width));
+      const percent = (offset / rect.width) * 100;
+      after.style.clipPath = `inset(0 ${100 - percent}% 0 0)`;
+      handle.style.left = `${percent}%`;
+    }
 
-  slider.addEventListener('mousemove', (e) => {
-    const rect = slider.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const percent = Math.max(0, Math.min(1, x / rect.width));
-    afterImg.style.clipPath = `inset(0 ${(1 - percent) * 100}% 0 0)`;
-    handle.style.left = `${percent * 100}%`;
-  });
-</script>
+    slider.addEventListener('mousemove', (e) => {
+      if (e.buttons !== 1) return; // только при зажатой кнопке мыши
+      updateSlider(e.clientX);
+    });
 
+    slider.addEventListener('mousedown', (e) => {
+      updateSlider(e.clientX);
+    });
+
+    slider.addEventListener('touchmove', (e) => {
+      updateSlider(e.touches[0].clientX);
+    });
+
+    slider.addEventListener('touchstart', (e) => {
+      updateSlider(e.touches[0].clientX);
+    });
+  </script>
 </body>
 </html>
