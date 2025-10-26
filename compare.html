@@ -1,87 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Image Comparison Slider</title>
+  <meta charset="UTF-8">
+  <title>Сравнение картинок</title>
   <style>
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      background: #000;
-      height: 100%;
+      background: #111;
       display: flex;
       justify-content: center;
       align-items: center;
+      height: 100vh;
     }
+
     .slider-container {
       position: relative;
       width: 90vw;
-      max-width: 1400px;
+      max-width: 1200px;
       overflow: hidden;
-      border-radius: 24px;
+      border-radius: 16px;
+      box-shadow: 0 0 10px #000;
+      cursor: ew-resize;
     }
+
     .slider-container img {
-      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: auto;
+      display: block;
+      user-select: none;
+      pointer-events: none;
     }
-    .slider-top {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 50%;
-      height: 100%;
-      overflow: hidden;
+
+    .slider-container .after {
+      clip-path: inset(0 50% 0 0); /* Показываем половину */
+      transition: clip-path 0.05s ease-out;
     }
-    .slider-top img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      object-fit: cover;
-    }
-    .slider-handle {
+
+    .handle {
       position: absolute;
       top: 0;
       left: 50%;
+      transform: translateX(-50%);
       width: 4px;
       height: 100%;
-      background: #fff;
-      cursor: ew-resize;
-      z-index: 2;
-      transform: translateX(-2px);
+      background: white;
+      z-index: 10;
     }
   </style>
 </head>
 <body>
-  <div class="slider-container" id="slider">
-    <img src="before.png" alt="Before image">
-    <div class="slider-top" id="sliderTop">
-      <img src="after.png" alt="After image">
-    </div>
-    <div class="slider-handle" id="sliderHandle"></div>
-  </div>
 
-  <script>
-    const slider = document.getElementById('slider');
-    const sliderTop = document.getElementById('sliderTop');
-    const handle = document.getElementById('sliderHandle');
+<div class="slider-container" id="slider">
+  <img src="Заглавный блок.png" class="before" alt="До">
+  <img src="Заглавный блок-1.png" class="after" alt="После">
+  <div class="handle" id="handle"></div>
+</div>
 
-    let isDown = false;
+<script>
+  const slider = document.getElementById('slider');
+  const afterImg = slider.querySelector('.after');
+  const handle = document.getElementById('handle');
 
-    slider.addEventListener('mousedown', () => isDown = true);
-    slider.addEventListener('mouseup', () => isDown = false);
-    slider.addEventListener('mouseleave', () => isDown = false);
-    slider.addEventListener('mousemove', (e) => {
-      if (!isDown) return;
-      const rect = slider.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const percent = Math.max(0, Math.min(x / rect.width, 1));
-      sliderTop.style.width = `${percent * 100}%`;
-      handle.style.left = `${percent * 100}%`;
-    });
-  </script>
+  slider.addEventListener('mousemove', (e) => {
+    const rect = slider.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const percent = Math.max(0, Math.min(1, x / rect.width));
+    afterImg.style.clipPath = `inset(0 ${(1 - percent) * 100}% 0 0)`;
+    handle.style.left = `${percent * 100}%`;
+  });
+</script>
+
 </body>
 </html>
