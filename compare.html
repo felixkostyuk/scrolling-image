@@ -34,13 +34,13 @@
       object-fit: cover;
     }
 
-    .after {
+    .before {
       z-index: 2;
       clip-path: inset(0 50% 0 0);
       transition: clip-path 0.1s;
     }
 
-    .before {
+    .after {
       z-index: 1;
     }
 
@@ -60,14 +60,14 @@
 </head>
 <body>
   <div class="slider-container" id="slider">
-    <img src="before.png" class="before" alt="До">
     <img src="after.png" class="after" alt="После">
+    <img src="before.png" class="before" alt="До">
     <div class="handle" id="handle"></div>
   </div>
 
   <script>
     const slider = document.getElementById('slider');
-    const after = slider.querySelector('.after');
+    const before = slider.querySelector('.before');
     const handle = slider.querySelector('#handle');
 
     slider.addEventListener('mousemove', (e) => {
@@ -75,7 +75,7 @@
       const offsetX = e.clientX - rect.left;
       const percent = offsetX / rect.width;
 
-      after.style.clipPath = `inset(0 ${(1 - percent) * 100}% 0 0)`;
+      before.style.clipPath = `inset(0 ${(1 - percent) * 100}% 0 0)`;
       handle.style.left = `${percent * 100}%`;
     });
   </script>
